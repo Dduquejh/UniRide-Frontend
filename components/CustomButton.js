@@ -8,7 +8,7 @@ const CustomButton = React.forwardRef(({ text, ...props }, ref) => {
     <Pressable
       ref={ref}
       className={`w-72 h-12 justify-center items-center rounded-xl ${
-        isPressed ? "bg-gray-600" : "bg-gray-400"
+        isPressed ? "bg-gray-400" : "bg-gray-300"
       }`}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
