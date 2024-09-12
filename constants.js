@@ -20,3 +20,26 @@ export const communities = [
     imageSource: require("./assets/CommunityLogos/ComingSoon.png"),
   },
 ];
+
+export const zones = [
+  {
+    zoneID: "Envigado",
+    text: "Envigado",
+    imageSource: require("./assets/ZoneLogos/Zone1.png"),
+  },
+  {
+    zoneID: "Poblado",
+    text: "Poblado",
+    imageSource: require("./assets/ZoneLogos/Zone1.png"),
+  },
+  {
+    zoneID: "La-Ceja",
+    text: "La Ceja",
+    imageSource: require("./assets/ZoneLogos/Zone2.png"),
+  },
+  {
+    zoneID: "Rionegro",
+    text: "Rionegro",
+    imageSource: require("./assets/ZoneLogos/Zone2.png"),
+  },
+];
