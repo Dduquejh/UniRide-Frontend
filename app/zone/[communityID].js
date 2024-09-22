@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ZoneCard from "../../components/ZoneCard";
 import { communities } from "../../constants";
 import { zones } from "../../constants";
+import TabBar from "../../components/TabBar";
 
 export default function Zone() {
   const insets = useSafeAreaInsets();
@@ -41,6 +42,7 @@ export default function Zone() {
           </View>
         ))}
       </ScrollView>
+      <TabBar communityID={communityID} />
     </View>
   );
 }

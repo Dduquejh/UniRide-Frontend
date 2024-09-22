@@ -5,7 +5,7 @@ import { Link } from "expo-router";
 const ZoneCard = ({ imgSource, text, zoneID }) => {
   const [isPressed, setIsPressed] = useState(false);
   return (
-    <Link asChild href={`/prueba/${zoneID}`}>
+    <Link asChild href={`/search/${zoneID}`}>
       <Pressable
         className="w-full max-w-xs justify-center items-center mb-4"
         onPressIn={() => setIsPressed(true)}
