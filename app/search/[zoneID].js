@@ -5,9 +5,9 @@ import { Text, View } from "react-native";
 import { zones } from "../../constants";
 import TabBar from "../../components/TabBar";
 
-const PruebaZoneID = () => {
+const SearchZone = () => {
   const insets = useSafeAreaInsets();
-  const { zoneID } = useLocalSearchParams();
+  const { zoneID, communityID } = useLocalSearchParams();
   const zone = zones.find((z) => z.zoneID === zoneID);
   return (
     <View
@@ -18,9 +18,9 @@ const PruebaZoneID = () => {
         <Text>Options for {zone.text}</Text>
         <Text>Building...</Text>
       </View>
-      <TabBar />
+      <TabBar communityID={communityID} />
     </View>
   );
 };
 
-export default PruebaZoneID;
+export default SearchZone;

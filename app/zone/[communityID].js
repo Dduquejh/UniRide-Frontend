@@ -38,6 +38,7 @@ export default function Zone() {
               imgSource={zone.imageSource}
               text={zone.text}
               zoneID={zone.zoneID}
+              communityID={communityID}
             />
           </View>
         ))}

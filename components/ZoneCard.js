@@ -2,10 +2,16 @@ import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { Link } from "expo-router";
 
-const ZoneCard = ({ imgSource, text, zoneID }) => {
+const ZoneCard = ({ imgSource, text, zoneID, communityID }) => {
   const [isPressed, setIsPressed] = useState(false);
   return (
-    <Link asChild href={`/search/${zoneID}`}>
+    <Link
+      asChild
+      href={{
+        pathname: `/search/${zoneID}`,
+        params: { communityID: communityID },
+      }}
+    >
       <Pressable
         className="w-full max-w-xs justify-center items-center mb-4"
         onPressIn={() => setIsPressed(true)}

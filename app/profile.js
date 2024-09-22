@@ -1,10 +1,11 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, View } from "react-native";
+import { useLocalSearchParams } from "expo-router";
 import TabBar from "../components/TabBar";
 
 const Profile = () => {
   const insets = useSafeAreaInsets();
-
+  const { communityID } = useLocalSearchParams();
   return (
     <View
       className="flex-1 w-4/5 justify-center mx-auto"
@@ -13,7 +14,7 @@ const Profile = () => {
       <View className="flex-1 w-4/5 justify-center items-center">
         <Text>Profile</Text>
       </View>
-      <TabBar />
+      <TabBar communityID={communityID} />
     </View>
   );
 };
