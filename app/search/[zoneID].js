@@ -6,11 +6,13 @@ import { zones } from "../../constants";
 import TabBar from "../../components/TabBar";
 import { useState } from "react";
 import ShareForm from "../../components/ShareForm";
+import SearchForm from "../../components/SearchForm";
 
 const SearchZone = () => {
   const insets = useSafeAreaInsets();
   const { zoneID, communityID } = useLocalSearchParams();
   const zone = zones.find((z) => z.zoneID === zoneID);
+  console.log(zone);
   const [isSharing, setIsSharing] = useState(true);
   return (
     <View
@@ -46,11 +48,7 @@ const SearchZone = () => {
         </View>
 
         <View className="pt-6 mt-6 bg-slate-300 h-5/6 rounded-xl">
-          {isSharing ? (
-            <ShareForm />
-          ) : (
-            <Text>Información sobre tomar un viaje...</Text>
-          )}
+          {isSharing ? <ShareForm /> : <SearchForm />}
         </View>
       </View>
 
