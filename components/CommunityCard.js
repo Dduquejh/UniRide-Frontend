@@ -12,7 +12,7 @@ const CommunityCard = ({ imageSource, text, communityID }) => {
         onPressOut={() => setIsPressed(false)}
       >
         <Image
-          source={imageSource}
+          source={{ uri: imageSource }}
           style={{ width: 40, height: 40 }}
           resizeMode="contain"
         />
