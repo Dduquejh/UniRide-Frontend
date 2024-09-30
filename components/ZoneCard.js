@@ -21,7 +21,7 @@ const ZoneCard = ({ imgSource, text, zoneID, communityID }) => {
           className={`bg-slate-300 rounded-xl shadow-lg overflow-hidden w-full ${isPressed ? "bg-slate-400" : ""}`}
         >
           <Image
-            source={imgSource}
+            source={{ uri: imgSource }}
             style={{ width: "100%", height: 100 }}
             resizeMode="cover"
             className={`${isPressed ? "opacity-50" : ""}`}
