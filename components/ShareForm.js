@@ -10,8 +10,11 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Checkbox from "expo-checkbox";
 import { Picker } from "@react-native-picker/picker";
+import Constants from "expo-constants";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
-const ShareForm = () => {
+const ShareForm = ({ zoneId, token }) => {
   const [selectedCheckbox, setSelectedCheckbox] = useState(false);
   const [date, setDate] = useState(new Date());
   const [formattedDate, setFormattedDate] = useState(
@@ -23,6 +26,7 @@ const ShareForm = () => {
   const [carSeats, setCarSeats] = useState(1);
   const [description, setDescription] = useState("");
   const [isPressed, setIsPressed] = useState(false);
+  const [userId, setUserId] = useState("");
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -33,19 +37,51 @@ const ShareForm = () => {
     setFormattedDate(dateString);
   };
 
-  const handleSubmit = () => {
-    Alert.alert(
-      "Tu viaje ha sido publicado con éxito!",
-      "Recuerda actualizar el número de cupos disponibles desde tu perfil. Los interesados en tu viaje te contactaran por WhatsApp.",
-      [
-        {
-          text: "OK",
-        },
-        // eslint-disable-next-line prettier/prettier
-      ]
-    );
-    console.log("Form submitted");
-    // Implement form submission logic here
+  const handleSubmit = async () => {
+    getIdFromToken(token);
+    try {
+      const url = Constants.expoConfig.extra.apiUrl;
+      const tripData = {
+        fromOrTo: selectedCheckbox,
+        date: formattedDate,
+        hour: selectedHour,
+        seats: carSeats,
+        description: description,
+        userId: userId,
+        zoneId: zoneId,
+      };
+      const response = await axios.post(`${url}/trips`, tripData);
+      if (response.status === 201) {
+        Alert.alert(
+          "Tu viaje ha sido publicado con éxito!",
+          "Recuerda actualizar el número de cupos disponibles desde tu perfil. Los interesados en tu viaje te contactaran por WhatsApp.",
+          [
+            {
+              text: "Editar Viaje",
+            },
+            {
+              text: "OK",
+            },
+            // eslint-disable-next-line prettier/prettier
+          ]
+        );
+      }
+    } catch (e) {
+      console.log(e);
+      console.log(e.response);
+    }
+  };
+
+  const getIdFromToken = async (token) => {
+    if (!token) {
+      return;
+    }
+    try {
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken.id);
+    } catch (e) {
+      console.log("Error decoding token", e);
+    }
   };
 
   const hourOptions = [];
@@ -72,7 +108,7 @@ const ShareForm = () => {
           <Text className="pl-2 text-lg">Hacia la universidad</Text>
         </View>
         <View>
-          <Text className="font-bold text-xl pt-4">Salida</Text>
+          <Text className="font-bold text-xl pt-4">Fecha</Text>
           <Pressable onPress={() => setShowDatePicker(true)}>
             <Text className="text-base font-semibold bg-white rounded-xl pl-4">
               {formattedDate}

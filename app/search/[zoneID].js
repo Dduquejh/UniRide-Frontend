@@ -10,7 +10,7 @@ import SearchForm from "../../components/SearchForm";
 
 const SearchZone = () => {
   const insets = useSafeAreaInsets();
-  const { zoneID, communityID } = useLocalSearchParams();
+  const { zoneID, communityID, token } = useLocalSearchParams();
   const zone = zones.find((z) => z.zoneID === zoneID);
   console.log(zone);
   const [isSharing, setIsSharing] = useState(true);
@@ -48,7 +48,11 @@ const SearchZone = () => {
         </View>
 
         <View className="pt-6 mt-6 bg-slate-300 h-5/6 rounded-xl">
-          {isSharing ? <ShareForm /> : <SearchForm />}
+          {isSharing ? (
+            <ShareForm zoneId={zoneID} token={token} />
+          ) : (
+            <SearchForm />
+          )}
         </View>
       </View>
 

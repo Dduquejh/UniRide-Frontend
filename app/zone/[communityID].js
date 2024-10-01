@@ -91,6 +91,7 @@ export default function Zone() {
               text={zone.text}
               zoneID={zone.id}
               communityID={communityID}
+              token={token}
             />
           </View>
         ))}

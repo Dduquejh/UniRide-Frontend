@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { Link } from "expo-router";
 
-const ZoneCard = ({ imgSource, text, zoneID, communityID }) => {
+const ZoneCard = ({ imgSource, text, zoneID, communityID, token }) => {
   const [isPressed, setIsPressed] = useState(false);
   return (
     <Link
       asChild
       href={{
         pathname: `/search/${zoneID}`,
-        params: { communityID: communityID },
+        params: { communityID: communityID, token: token },
       }}
     >
       <Pressable
