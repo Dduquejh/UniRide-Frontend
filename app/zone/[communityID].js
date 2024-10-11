@@ -73,9 +73,16 @@ export default function Zone() {
         <Text className="text-white text-4xl font-bold pt-4">Bienvenido</Text>
         <Image
           source={{ uri: imageSource }}
-          style={{ width: 100, height: 100 }}
+          style={{ width: 150, height: 100 }}
           resizeMode="contain"
         />
+      </View>
+      <View className="pb-4">
+        <Text className="text-xl font-bold">Selecciona tu zona</Text>
+        <Text>
+          Esta corresponde a la zona desde la que tomas u ofreces transporte o
+          hacia la que te diriges
+        </Text>
       </View>
       <ScrollView
         contentContainerStyle={{

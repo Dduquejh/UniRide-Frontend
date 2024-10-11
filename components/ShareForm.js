@@ -108,7 +108,7 @@ const ShareForm = ({ zoneId, token }) => {
           <Text className="pl-2 text-lg">Hacia la universidad</Text>
         </View>
         <View>
-          <Text className="font-bold text-xl pt-4">Fecha</Text>
+          <Text className="font-semibold text-base pt-4">Fecha</Text>
           <Pressable onPress={() => setShowDatePicker(true)}>
             <Text className="text-base font-semibold bg-white rounded-xl pl-4">
               {formattedDate}
