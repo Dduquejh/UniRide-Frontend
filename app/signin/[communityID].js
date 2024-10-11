@@ -8,7 +8,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Link } from "expo-router";
 import { CommunitiesContext } from "../../components/GetCommunities";
 import Constants from "expo-constants";
 
@@ -20,6 +19,7 @@ export default function Login() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessages, setErrorMessages] = useState([]);
   const { communityID } = useLocalSearchParams();
   const { communities, loading, error } = useContext(CommunitiesContext);
   if (loading) {
@@ -43,8 +43,12 @@ export default function Login() {
   const imageSource = community ? community.imageSource : null;
 
   const handleRegister = async () => {
+    setErrorMessages([]);
     if (!name || !phone || !email || !password) {
-      Alert.alert("Error", "Por favor, llene todos los campos");
+      setErrorMessages((prev) => [
+        ...prev,
+        "Por favor, llene todos los campos",
+      ]);
       return;
     }
     try {
@@ -58,13 +62,18 @@ export default function Login() {
       const response = await axios.post(`${url}/auth`, userData);
       if (response.status === 201) {
         Alert.alert("Éxito", "Usuario registrado exitosamente");
+        setErrorMessages([]);
         router.push(`/login/${communityID}`);
-      } else if (response.status === 400) {
-        Alert.alert("Error", response.data.message);
       }
     } catch (e) {
-      console.log(e);
-      Alert.alert("Error", "Error al registrar usuario");
+      if (e.response && e.response.data && e.response.data.message) {
+        setErrorMessages((prev) => [...prev, e.response.data.message]);
+      } else {
+        setErrorMessages((prev) => [
+          ...prev,
+          "Ha ocurrido un error, intente de nuevo",
+        ]);
+      }
     }
   };
 
@@ -116,6 +125,16 @@ export default function Login() {
         />
 
         <CustomButton text="Sign In" onPress={handleRegister} />
+        {errorMessages.length > 0 && (
+          <View className="mt-2">
+            {errorMessages.map((msg, index) => (
+              <Text key={index} className="text-red-600 text-center mt-1">
+                {" "}
+                {msg}
+              </Text>
+            ))}
+          </View>
+        )}
       </View>
     </View>
   );

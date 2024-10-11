@@ -1,13 +1,6 @@
 import { useContext, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { ActivityIndicator, Image, Text, TextInput, View } from "react-native";
 
 import { CommunitiesContext } from "../../components/GetCommunities";
 import Constants from "expo-constants";
@@ -19,6 +12,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const { communityID } = useLocalSearchParams();
   const { communities, loading, error } = useContext(CommunitiesContext);
+  const [errorMessages, setErrorMessages] = useState([]);
+
   if (loading) {
     return (
       <View className="w-4/5 justify-center items-center">
@@ -39,8 +34,12 @@ export default function Login() {
   const imageSource = community ? community.imageSource : null;
 
   const handleLogin = async () => {
+    setErrorMessages([]);
     if (!email || !password) {
-      Alert.alert("Error", "Por favor, llene todos los campos");
+      setErrorMessages((prev) => [
+        ...prev,
+        "Por favor, llene todos los campos",
+      ]);
       return;
     }
     try {
@@ -52,18 +51,17 @@ export default function Login() {
       const response = await axios.post(`${url}/auth/login`, userData);
       if (response.status === 201) {
         router.push(`../zone/${communityID}?token=${response.data.token}`);
-        console.log(response.data.token);
-      } else if (response.status === 400) {
-        Alert.alert("Error", response.data.message);
-      }
-      if (response.status === 404) {
-        Alert.alert("Error", "dsa");
-        console.log(response.data.message);
+        setErrorMessages([]);
       }
     } catch (e) {
-      console.log(e);
-      console.log(e.message);
-      Alert.alert("Error", "Error al ingresar");
+      if (e.response && e.response.data && e.response.data.message) {
+        setErrorMessages((prev) => [...prev, e.response.data.message]);
+      } else {
+        setErrorMessages((prev) => [
+          ...prev,
+          "Ha ocurrido un error, intente de nuevo",
+        ]);
+      }
     }
   };
 
@@ -99,6 +97,15 @@ export default function Login() {
         />
 
         <CustomButton text="Log In" onPress={handleLogin} />
+        {errorMessages.length > 0 && (
+          <View className="mt-2">
+            {errorMessages.map((msg, index) => (
+              <Text key={index} className="text-red-600 text-center">
+                {msg}
+              </Text>
+            ))}
+          </View>
+        )}
       </View>
     </View>
   );
