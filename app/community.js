@@ -1,10 +1,18 @@
-import { ScrollView, Text, View } from "react-native";
+import { useContext } from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CommunityCard from "../components/CommunityCard";
-import { communities } from "../constants";
+import { CommunitiesContext } from "../components/GetCommunities";
 
 export default function Community() {
   const insets = useSafeAreaInsets();
+  const { communities, loading, error } = useContext(CommunitiesContext);
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
   return (
     <View className="flex-1 w-4/5" style={{ paddingTop: insets.top }}>
       <View className="px-4 mt-8 shadow-2xl mb-6 border-b-2 border-gray-200 w-full items-center py-4 bg-teal-700 rounded-xl justify-center">
@@ -16,10 +24,10 @@ export default function Community() {
       <ScrollView className="flex-1 p-4 rounded-lg">
         {communities.map((community) => (
           <CommunityCard
-            key={community.communityID}
+            key={community.id}
             imageSource={community.imageSource}
             text={community.text}
-            communityID={community.communityID}
+            communityID={community.id}
           />
         ))}
       </ScrollView>

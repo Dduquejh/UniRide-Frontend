@@ -1,14 +1,34 @@
 import { useLocalSearchParams } from "expo-router";
 import { Link } from "expo-router";
-import { Image, Text, View } from "react-native";
+import { ActivityIndicator, Image, Text, View } from "react-native";
+import { CommunitiesContext } from "../components/GetCommunities";
 
 import CustomButton from "../components/CustomButton";
-
-import { communities } from "../constants";
+import { useContext } from "react";
 
 export default function LoginOrSignin() {
   const { communityID } = useLocalSearchParams();
-  const community = communities.find((c) => c.communityID === communityID);
+  const { communities, loading, error } = useContext(CommunitiesContext);
+  if (loading) {
+    return (
+      <View className="w-4/5 justify-center items-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+  if (error) {
+    return (
+      <View className="w-4/5 justify-center items-center">
+        <Text className="text-2xl font-bold text-red-600">
+          Error: {error.message}
+        </Text>
+      </View>
+    );
+  }
+  const community = communities.find(
+    // eslint-disable-next-line prettier/prettier
+    (community) => community.id === communityID
+  );
   if (!community) {
     return (
       <View className="w-4/5 justify-center items-center">
@@ -23,7 +43,7 @@ export default function LoginOrSignin() {
     <View className="w-4/5 justify-center">
       <View className="flex-row items-center mb-8 bg-teal-700 rounded-xl justify-center w-full">
         <Image
-          source={imageSource}
+          source={{ uri: imageSource }}
           style={{ width: 100, height: 100 }}
           resizeMode="contain"
         />
