@@ -1,11 +1,25 @@
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, Linking, Alert } from "react-native";
 
 const TripCard = ({ trip }) => {
   const [isSelected, setIsSelected] = useState(false);
 
   const handleSelect = () => {
     setIsSelected(!isSelected);
+  };
+
+  const handleWhatsApp = () => {
+    const phoneNumber = `+57${trip.user.phone}`;
+    const message = `Hola ${trip.userName}, estoy interesado en unirme a tu viaje el ${trip.date} a las ${trip.hour}. ¿Podrías confirmar si aún tienes cupos disponibles?`;
+
+    const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+    Linking.openURL(url).catch(() => {
+      Alert.alert(
+        "Error",
+        // eslint-disable-next-line prettier/prettier
+        "No se pudo abrir WhatsApp. Por favor, verifica que la aplicación esté instalada en tu dispositivo."
+      );
+    });
   };
   return (
     <View
@@ -61,7 +75,10 @@ const TripCard = ({ trip }) => {
             >
               <Text className="text-white font-semibold">Cancelar</Text>
             </Pressable>
-            <Pressable className="bg-lime-500 py-1 px-8 rounded-lg mx-4">
+            <Pressable
+              onPress={handleWhatsApp}
+              className="bg-lime-500 py-1 px-8 rounded-lg mx-4"
+            >
               <Text className="text-white font-semibold">WhatsApp</Text>
             </Pressable>
           </View>
