@@ -5,7 +5,7 @@ import TabBar from "../components/TabBar";
 
 const Profile = () => {
   const insets = useSafeAreaInsets();
-  const { communityID } = useLocalSearchParams();
+  const { communityID, token } = useLocalSearchParams();
   return (
     <View
       className="flex-1 w-4/5 justify-center mx-auto"
@@ -14,7 +14,7 @@ const Profile = () => {
       <View className="flex-1 w-4/5 justify-center items-center">
         <Text>Profile</Text>
       </View>
-      <TabBar communityID={communityID} />
+      <TabBar communityID={communityID} token={token} />
     </View>
   );
 };

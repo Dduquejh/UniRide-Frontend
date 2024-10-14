@@ -103,7 +103,7 @@ export default function Zone() {
           </View>
         ))}
       </ScrollView>
-      <TabBar communityID={communityID} />
+      <TabBar communityID={communityID} token={token} />
     </View>
   );
 }
