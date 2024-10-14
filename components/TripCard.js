@@ -44,14 +44,14 @@ const TripCard = ({ trip }) => {
             <Text className="font-semibold">Descripción del trayecto:</Text>
             <Text className="ml-2">{trip.description}</Text>
           </View>
-          <View className="flex-row">
+          <View className="flex-row justify-between flex-wrap">
             <Pressable
               onPress={handleSelect}
               className="bg-teal-700 py-1 px-2 rounded-lg"
             >
               <Text className="text-white font-semibold">Concretar viaje</Text>
             </Pressable>
-            <View className="flex-row ml-12">
+            <View className="flex-row items-center">
               <Text className="font-semibold p-1">Cupos disponibles: </Text>
               <Text className="bg-slate-300 px-2 py-1 rounded-lg">
                 {trip.seats}
