@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { Alert, View, Text, Pressable, ScrollView } from "react-native";
+import { View, Text, Pressable, ScrollView } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Checkbox from "expo-checkbox";
 import { Picker } from "@react-native-picker/picker";
 
-const SearchForm = () => {
+const SearchForm = ({ zoneId, onSearchResults }) => {
   const [selectedCheckbox, setSelectedCheckbox] = useState(false);
   const [date, setDate] = useState(new Date());
-  const [formattedDate, setFormattedDate] = useState(
+  const [formattedDate, setFormattedDate] = useState(() =>
     // eslint-disable-next-line prettier/prettier
-    "Selecciona la fecha"
+    new Date().toLocaleDateString("es-ES")
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedHour, setSelectedHour] = useState("");
@@ -20,26 +20,31 @@ const SearchForm = () => {
     setShowDatePicker(false);
     setDate(currentDate);
 
-    const dateString = currentDate.toLocaleDateString();
+    const dateString = currentDate.toLocaleDateString("es-ES");
     setFormattedDate(dateString);
   };
 
   const handleSubmit = () => {
-    Alert.alert(
-      "Esto debería de mostrar los viajes que coinciden con tu búsqueda",
-      "Por el momento está en desarrollo",
-      [
-        {
-          text: "OK",
-        },
-        // eslint-disable-next-line prettier/prettier
-      ]
-    );
-    console.log("Form submitted");
-    // Implement form submission logic here
+    const tripData = {};
+    tripData.zoneId = zoneId;
+
+    if (selectedCheckbox) {
+      tripData.fromOrTo = selectedCheckbox;
+    }
+
+    if (formattedDate !== "Selecciona la fecha") {
+      tripData.date = formattedDate;
+    }
+
+    if (selectedHour !== "Selecciona la hora" && selectedHour !== "") {
+      tripData.hour = selectedHour;
+    }
+
+    onSearchResults(tripData);
   };
 
   const hourOptions = [];
+  hourOptions.push("Selecciona la hora");
   for (let hour = 6; hour <= 20; hour++) {
     hourOptions.push(`${hour < 10 ? `0${hour}` : hour}:00`);
     hourOptions.push(`${hour < 10 ? `0${hour}` : hour}:30`);
@@ -78,7 +83,11 @@ const SearchForm = () => {
           )}
 
           <Text className="text-base font-semibold pt-2">
-            Selecciona la hora
+            {selectedCheckbox
+              ? selectedCheckbox === "From"
+                ? "Selecciona la hora de salida"
+                : "Selecciona la hora de llegada"
+              : "Selecciona la hora"}
           </Text>
           <View className="bg-white rounded-xl justify-center h-6">
             <Picker

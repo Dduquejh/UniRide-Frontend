@@ -11,3 +11,7 @@ export const ProfileIcon = (props) => {
     <Ionicons name="person-circle-outline" size={24} color="black" {...props} />
   );
 };
+
+export const ReturnIcon = (props) => {
+  return <Ionicons name="arrow-back" size={24} color="black" {...props} />;
+};
