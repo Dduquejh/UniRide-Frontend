@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   View,
@@ -6,6 +6,7 @@ import {
   TextInput,
   Pressable,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Checkbox from "expo-checkbox";
@@ -17,9 +18,9 @@ import axios from "axios";
 const ShareForm = ({ zoneId, token }) => {
   const [selectedCheckbox, setSelectedCheckbox] = useState(false);
   const [date, setDate] = useState(new Date());
-  const [formattedDate, setFormattedDate] = useState(
+  const [formattedDate, setFormattedDate] = useState(() =>
     // eslint-disable-next-line prettier/prettier
-    "Selecciona la fecha"
+    new Date().toLocaleDateString("es-ES")
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedHour, setSelectedHour] = useState("");
@@ -27,18 +28,33 @@ const ShareForm = ({ zoneId, token }) => {
   const [description, setDescription] = useState("");
   const [isPressed, setIsPressed] = useState(false);
   const [userId, setUserId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      console.log("entra al use effect");
+      await getIdFromToken(token);
+    };
+    fetchUserId();
+  }, [token]);
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDatePicker(false);
     setDate(currentDate);
 
-    const dateString = currentDate.toLocaleDateString();
+    const dateString = currentDate.toLocaleDateString("es-ES");
     setFormattedDate(dateString);
   };
 
   const handleSubmit = async () => {
-    getIdFromToken(token);
+    setIsLoading(true);
+    await getIdFromToken(token);
+    if (!userId) {
+      Alert.alert("Error", "No se pudo obtener el ID del usuario.");
+      setIsLoading(false);
+      return;
+    }
     try {
       const url = Constants.expoConfig.extra.apiUrl;
       const tripData = {
@@ -69,6 +85,8 @@ const ShareForm = ({ zoneId, token }) => {
     } catch (e) {
       console.log(e);
       console.log(e.response);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,6 +103,7 @@ const ShareForm = ({ zoneId, token }) => {
   };
 
   const hourOptions = [];
+  hourOptions.push("Selecciona la hora");
   for (let hour = 6; hour <= 20; hour++) {
     hourOptions.push(`${hour < 10 ? `0${hour}` : hour}:00`);
     hourOptions.push(`${hour < 10 ? `0${hour}` : hour}:30`);
@@ -111,7 +130,7 @@ const ShareForm = ({ zoneId, token }) => {
           <Text className="font-semibold text-base pt-4">Fecha</Text>
           <Pressable onPress={() => setShowDatePicker(true)}>
             <Text className="text-base font-semibold bg-white rounded-xl pl-4">
-              {formattedDate}
+              {formattedDate || new Date().toLocaleDateString("es-ES")}
             </Text>
           </Pressable>
           {showDatePicker && (
@@ -124,7 +143,11 @@ const ShareForm = ({ zoneId, token }) => {
           )}
 
           <Text className="text-base font-semibold pt-2">
-            Selecciona la hora
+            {selectedCheckbox
+              ? selectedCheckbox === "From"
+                ? "Selecciona la hora de salida"
+                : "Selecciona la hora de llegada"
+              : "Selecciona la hora"}
           </Text>
           <View className="bg-white rounded-xl justify-center h-6">
             <Picker
@@ -160,16 +183,21 @@ const ShareForm = ({ zoneId, token }) => {
           className="bg-white rounded-xl px-4 h-24"
         />
 
-        <Pressable
-          onPress={handleSubmit}
-          onPressIn={() => setIsPressed(true)}
-          onPressOut={() => setIsPressed(false)}
-          className={`mt-4 h-12 justify-center items-center rounded-xl ${
-            isPressed ? "bg-teal-800" : "bg-teal-700"
-          }`}
-        >
-          <Text className="text-white font-semibold">Ofrecer un viaje</Text>
-        </Pressable>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#00ff00" />
+        ) : (
+          <Pressable
+            onPress={handleSubmit}
+            onPressIn={() => setIsPressed(true)}
+            onPressOut={() => setIsPressed(false)}
+            disabled={isLoading} // Deshabilitar el botón mientras está cargando
+            className={`mt-4 h-12 justify-center items-center rounded-xl ${
+              isPressed ? "bg-teal-800" : "bg-teal-700"
+            }`}
+          >
+            <Text className="text-white font-semibold">Ofrecer un viaje</Text>
+          </Pressable>
+        )}
       </View>
     </ScrollView>
   );

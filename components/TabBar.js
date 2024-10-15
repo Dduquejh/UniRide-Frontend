@@ -2,13 +2,11 @@ import { Link, usePathname } from "expo-router";
 import { Text, View, Pressable } from "react-native";
 import { ProfileIcon, SearchIcon } from "./Icons";
 
-export default function TabBar({ communityID }) {
+export default function TabBar({ communityID, token }) {
   const currentPath = usePathname();
-
   return (
     <View className="flex-row justify-around p-2 bg-gray-100">
-      {/* Pestaña de búsqueda */}
-      <Link href={`/zone/${communityID}`} asChild>
+      <Link href={`/zone/${communityID}?token=${token}`} asChild>
         <Pressable className="flex items-center space-y-1 w-1/2">
           <SearchIcon
             className={`${currentPath.includes("zone") || currentPath.includes("search") ? "text-blue-500" : "text-gray-800"}`}
@@ -23,7 +21,10 @@ export default function TabBar({ communityID }) {
 
       {/* Pestaña de perfil */}
       <Link
-        href={{ pathname: "/profile", params: (communityID = { communityID }) }}
+        href={{
+          pathname: "/profile",
+          params: ((communityID = { communityID }), (token = { token })),
+        }}
         asChild
       >
         <Pressable className="flex items-center space-y-1 w-1/2">

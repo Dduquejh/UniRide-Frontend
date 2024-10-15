@@ -6,7 +6,7 @@ import { zones } from "../../constants";
 import TabBar from "../../components/TabBar";
 import { useState } from "react";
 import ShareForm from "../../components/ShareForm";
-import SearchForm from "../../components/SearchForm";
+import SearchPage from "../../components/SearchPage";
 
 const SearchZone = () => {
   const insets = useSafeAreaInsets();
@@ -14,6 +14,7 @@ const SearchZone = () => {
   const zone = zones.find((z) => z.zoneID === zoneID);
   console.log(zone);
   const [isSharing, setIsSharing] = useState(true);
+
   return (
     <View
       className="flex-1 w-full mx-auto items-center"
@@ -47,11 +48,11 @@ const SearchZone = () => {
           </Pressable>
         </View>
 
-        <View className="pt-6 mt-6 bg-slate-300 h-5/6 rounded-xl">
+        <View className="pt-6 mt-6 bg-slate-200 h-5/6 rounded-xl">
           {isSharing ? (
             <ShareForm zoneId={zoneID} token={token} />
           ) : (
-            <SearchForm />
+            <SearchPage zoneId={zoneID} />
           )}
         </View>
       </View>
