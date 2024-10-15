@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, Text, View, Linking, Alert } from "react-native";
 
-const TripCard = ({ trip }) => {
+const TripCard = ({ trip, isEditable }) => {
   const [isSelected, setIsSelected] = useState(false);
 
   const handleSelect = () => {
@@ -45,12 +45,23 @@ const TripCard = ({ trip }) => {
             <Text className="ml-2">{trip.description}</Text>
           </View>
           <View className="flex-row justify-between flex-wrap">
-            <Pressable
-              onPress={handleSelect}
-              className="bg-teal-700 py-1 px-2 rounded-lg"
-            >
-              <Text className="text-white font-semibold">Concretar viaje</Text>
-            </Pressable>
+            {!isEditable ? (
+              <Pressable
+                onPress={handleSelect}
+                className="bg-teal-700 py-1 px-2 rounded-lg"
+              >
+                <Text className="text-white font-semibold">
+                  Concretar viaje
+                </Text>
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() => console.log("Editar viaje")}
+                className="bg-red-500 py-1 px-2 rounded-lg"
+              >
+                <Text className="text-white font-semibold">Editar</Text>
+              </Pressable>
+            )}
             <View className="flex-row items-center">
               <Text className="font-semibold p-1">Cupos disponibles: </Text>
               <Text className="bg-slate-300 px-2 py-1 rounded-lg">

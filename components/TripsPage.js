@@ -34,7 +34,9 @@ const TripsPage = ({ tripData, onReturn }) => {
             </Text>
           </View>
         ) : (
-          trips.map((trip) => <TripCard key={trip.id} trip={trip} />)
+          trips.map((trip) => (
+            <TripCard key={trip.id} trip={trip} isEditable={false} />
+          ))
         )}
       </ScrollView>
     </View>
