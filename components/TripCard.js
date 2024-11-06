@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, Text, View, Linking, Alert } from "react-native";
+import { WhatsAppIcon } from "./Icons";
 
 const TripCard = ({ trip, isEditable }) => {
   const [isSelected, setIsSelected] = useState(false);
@@ -21,6 +22,21 @@ const TripCard = ({ trip, isEditable }) => {
       );
     });
   };
+
+  const bookTrip = () => {
+    Alert.alert(
+      "Viaje reservado",
+      "Tu viaje ha sido reservado con éxito. Contacta al estudiante para concretar detalles.",
+      [
+        {
+          text: "OK",
+        },
+        // eslint-disable-next-line prettier/prettier
+      ]
+    );
+
+    // Todo: Implementar lógica para reservar viaje (actualizar estado en la base de datos y tabla de reservas)
+  };
   return (
     <View
       key={trip.id}
@@ -39,6 +55,10 @@ const TripCard = ({ trip, isEditable }) => {
           <View className="flex-row">
             <Text className="font-semibold">Hora: </Text>
             <Text>{trip.hour}</Text>
+          </View>
+          <View className="flex-row">
+            <Text className="font-semibold">Placa: </Text>
+            <Text>{trip.plate}</Text>
           </View>
           <View className="mb-2">
             <Text className="font-semibold">Descripción del trayecto:</Text>
@@ -82,15 +102,18 @@ const TripCard = ({ trip, isEditable }) => {
           <View className="flex-row mx-auto">
             <Pressable
               onPress={handleSelect}
-              className="bg-gray-400 py-1 px-8 rounded-lg mx-4"
+              className="bg-gray-400 py-1 px-8 rounded-lg mr-2"
             >
               <Text className="text-white font-semibold">Cancelar</Text>
             </Pressable>
             <Pressable
-              onPress={handleWhatsApp}
-              className="bg-lime-500 py-1 px-8 rounded-lg mx-4"
+              onPress={bookTrip}
+              className="bg-lime-500 py-1 px-8 rounded-lg mr-2"
             >
-              <Text className="text-white font-semibold">WhatsApp</Text>
+              <Text className="text-white font-semibold">Reservar</Text>
+            </Pressable>
+            <Pressable onPress={handleWhatsApp}>
+              <WhatsAppIcon />
             </Pressable>
           </View>
         </View>
