@@ -49,7 +49,7 @@ const SearchZone = () => {
           {isSharing ? (
             <ShareForm zoneId={zoneID} token={token} />
           ) : (
-            <SearchPage zoneId={zoneID} />
+            <SearchPage zoneId={zoneID} token={token} />
           )}
         </View>
       </View>
