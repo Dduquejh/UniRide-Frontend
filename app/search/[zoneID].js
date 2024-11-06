@@ -2,7 +2,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
-import { zones } from "../../constants";
 import TabBar from "../../components/TabBar";
 import { useState } from "react";
 import ShareForm from "../../components/ShareForm";
@@ -11,8 +10,6 @@ import SearchPage from "../../components/SearchPage";
 const SearchZone = () => {
   const insets = useSafeAreaInsets();
   const { zoneID, communityID, token } = useLocalSearchParams();
-  const zone = zones.find((z) => z.zoneID === zoneID);
-  console.log(zone);
   const [isSharing, setIsSharing] = useState(true);
 
   return (
@@ -58,7 +55,7 @@ const SearchZone = () => {
       </View>
 
       <View className="w-4/5 mx-auto absolute bottom-0">
-        <TabBar communityID={communityID} />
+        <TabBar communityID={communityID} token={token} />
       </View>
     </View>
   );

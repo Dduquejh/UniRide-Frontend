@@ -14,18 +14,15 @@ export default function Zone() {
   const { communities, loading, error } = useContext(CommunitiesContext);
   const [zones, setZones] = useState([]);
   useEffect(() => {
-    console.log("useEffect");
     const fetchData = async () => {
       const url = Constants.expoConfig.extra.apiUrl;
       try {
-        console.log("fetchData");
         const response = await axios.get(`${url}/zones`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
-        console.log("response", response.data);
         setZones(response.data);
       } catch (error) {
         if (error.response) {

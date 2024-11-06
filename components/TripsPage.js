@@ -12,7 +12,6 @@ const TripsPage = ({ tripData, onReturn }) => {
       const url = Constants.expoConfig.extra.apiUrl;
       const response = await axios.post(`${url}/trips/search`, tripData);
       setTrips(response.data);
-      console.log(response.data);
     };
     fetchData();
   }, [tripData]);
