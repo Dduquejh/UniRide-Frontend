@@ -27,6 +27,7 @@ const TripCard = ({ trip, isEditable, token, onReserve }) => {
       await fetchUserData(TokenUserId);
     };
     decodeTokenAndFetchData();
+    console.log("ZoneId");
   }, [token]);
 
   const fetchUserData = async (userId) => {
@@ -199,7 +200,7 @@ const TripCard = ({ trip, isEditable, token, onReserve }) => {
               </Pressable>
             </View>
             <ScrollView>
-              <ShareForm zoneId={trip.zoneId} />
+              <ShareForm zoneId={trip.zoneId} trip={trip} isEditable={true} />
             </ScrollView>
           </View>
         </View>
