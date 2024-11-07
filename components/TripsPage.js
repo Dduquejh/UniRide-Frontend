@@ -44,6 +44,7 @@ const TripsPage = ({ tripData, onReturn, token }) => {
               key={trip.id}
               trip={trip}
               isEditable={false}
+              isReserved={false}
               token={token}
               onReserve={refreshTrips}
             />

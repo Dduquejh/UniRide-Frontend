@@ -16,7 +16,7 @@ import Constants from "expo-constants";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
-const ShareForm = ({ zoneId, token, trip, isEditable }) => {
+const ShareForm = ({ zoneId, token, trip, isEditable, onUpdate }) => {
   const [selectedCheckbox, setSelectedCheckbox] = useState(
     // eslint-disable-next-line prettier/prettier
     trip?.fromOrTo || false
@@ -111,6 +111,7 @@ const ShareForm = ({ zoneId, token, trip, isEditable }) => {
           [{ text: "OK" }]
         );
       }
+      onUpdate();
     } catch (e) {
       console.log(e);
     } finally {

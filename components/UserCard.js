@@ -1,7 +1,7 @@
 import { Image, Pressable, Text, View } from "react-native";
 import { EditIcon } from "./Icons";
 
-const UserCard = ({ userData, totalTrips }) => {
+const UserCard = ({ userData, totalTrips, totalReserved }) => {
   return (
     <View className="bg-gray-200 p-4 rounded-xl flex-row items-center justify-between mt-8 w-full">
       <Image
@@ -17,6 +17,9 @@ const UserCard = ({ userData, totalTrips }) => {
         </Text>
         <Text className="text-gray-600">
           Total viajes: {totalTrips || "##"}
+        </Text>
+        <Text className="text-gray-600">
+          Total reservas: {totalReserved || "##"}
         </Text>
         <Text className="text-gray-600">
           Celular: {userData.phone || "###-###-####"}

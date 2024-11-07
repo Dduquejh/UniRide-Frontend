@@ -24,6 +24,9 @@ const Profile = () => {
   const [tripDetails, setTripDetails] = useState([]);
   const [showTripDetails, setShowTripDetails] = useState(false);
 
+  const [reservedTrips, setReservedTrips] = useState([]);
+  const [showReservedTrips, setShowReservedTrips] = useState(false);
+
   useEffect(() => {
     const decodeTokenAndFetchData = async () => {
       const jwtKey = Constants.expoConfig.extra.jwtKey;
@@ -31,6 +34,7 @@ const Profile = () => {
       const TokenUserId = decodedToken.id;
       await fetchUserData(TokenUserId);
       fetchTripDetails(TokenUserId);
+      fetchReserveTrip(TokenUserId);
     };
     decodeTokenAndFetchData();
   }, [token]);
@@ -41,7 +45,7 @@ const Profile = () => {
       const response = await axios.get(`${apiUrl}/auth/${userId}`);
       setUserData(response.data);
     } catch (error) {
-      console.error("Error Message:", error.message);
+      console.log("Error Message:", error.message);
     }
   };
 
@@ -56,7 +60,24 @@ const Profile = () => {
       );
       setTripDetails(response.data);
     } catch (error) {
-      console.error(
+      console.log(
+        "Error al obtener los detalles de los viajes:",
+        // eslint-disable-next-line prettier/prettier
+        error.message
+      );
+    }
+  };
+
+  const fetchReserveTrip = async (TokenUserId) => {
+    const apiUrl = Constants.expoConfig.extra.apiUrl;
+    try {
+      const response = await axios.get(
+        // eslint-disable-next-line prettier/prettier
+        `${apiUrl}/trips/reserved/${TokenUserId}`
+      );
+      setReservedTrips(response.data);
+    } catch (error) {
+      console.log(
         "Error al obtener los detalles de los viajes:",
         // eslint-disable-next-line prettier/prettier
         error.message
@@ -69,6 +90,14 @@ const Profile = () => {
     setShowTripDetails(!showTripDetails);
   };
 
+  const handleToggleReservedTrips = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setShowReservedTrips(!showReservedTrips); // Alterna la visualización de viajes reservados
+  };
+
+  const reload = async () => {
+    router.push(`/profile?communityID=${communityID}&token=${token}`);
+  };
   return (
     <View
       className="flex-1 w-4/5 justify-center mx-auto"
@@ -78,7 +107,11 @@ const Profile = () => {
         <View className="mt-6">
           <Text className="text-4xl font-bold">Perfil</Text>
         </View>
-        <UserCard userData={userData} totalTrips={tripDetails.length} />
+        <UserCard
+          userData={userData}
+          totalTrips={tripDetails.length}
+          totalReserved={reservedTrips.length}
+        />
 
         <Pressable
           onPress={handleToggleTripDetails}
@@ -92,10 +125,43 @@ const Profile = () => {
           <ScrollView className="mt-4 bg-gray-100 p-4 rounded-lg w-full">
             {tripDetails.length > 0 ? (
               tripDetails.map((trip) => (
-                <TripCard key={trip.id} trip={trip} isEditable={true} />
+                <TripCard
+                  key={trip.id}
+                  trip={trip}
+                  isEditable={true}
+                  isReserved={false}
+                  onChange={reload}
+                />
               ))
             ) : (
               <Text>No se encontraron viajes.</Text>
+            )}
+          </ScrollView>
+        )}
+
+        <Pressable
+          onPress={handleToggleReservedTrips} // Alterna la visualización de los viajes reservados
+          className="bg-gray-200 p-4 flex-row items-center mt-9 w-full rounded-xl"
+        >
+          <CarIcon />
+          <Text className="text-lg ml-2">Mis viajes reservados</Text>
+        </Pressable>
+
+        {showReservedTrips && (
+          <ScrollView className="mt-4 bg-gray-100 p-4 rounded-lg w-full">
+            {reservedTrips.length > 0 ? (
+              reservedTrips.map((trip) => (
+                <TripCard
+                  key={trip.id}
+                  trip={trip}
+                  isEditable={false}
+                  isReserved={true}
+                  user={userData}
+                  onChange={reload}
+                />
+              ))
+            ) : (
+              <Text>No se encontraron viajes reservados.</Text>
             )}
           </ScrollView>
         )}
