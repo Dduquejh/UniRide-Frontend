@@ -1,18 +1,33 @@
 import { useLocalSearchParams } from "expo-router";
-import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ZoneCard from "../../components/ZoneCard";
 import { CommunitiesContext } from "../../components/GetCommunities";
 import TabBar from "../../components/TabBar";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import Constants from "expo-constants";
 import axios from "axios";
+import { SearchIcon } from "../../components/Icons";
+import debounce from "lodash.debounce";
 
 export default function Zone() {
   const insets = useSafeAreaInsets();
   const { communityID, token } = useLocalSearchParams();
   const { communities, loading, error } = useContext(CommunitiesContext);
   const [zones, setZones] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [filteredZones, setFilteredZones] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const debounceDelay = 500;
+
   useEffect(() => {
     const fetchData = async () => {
       const url = Constants.expoConfig.extra.apiUrl;
@@ -24,6 +39,7 @@ export default function Zone() {
           },
         });
         setZones(response.data);
+        setFilteredZones(response.data);
       } catch (error) {
         if (error.response) {
           // La solicitud se hizo y el servidor respondió con un código de estado
@@ -41,7 +57,41 @@ export default function Zone() {
 
     fetchData();
   }, [communityID, token]);
-  if (loading) {
+
+  const searchNeighborhoods = useCallback(
+    debounce(async (name) => {
+      setIsLoading(true);
+      try {
+        const url = Constants.expoConfig.extra.apiUrl;
+        const encodedName = encodeURIComponent(name);
+        const response = await axios.get(
+          // eslint-disable-next-line prettier/prettier
+          `${url}/neighborhoods/search/${encodedName}`
+        );
+        setFilteredZones(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        if (error.status === 404) {
+          setFilteredZones([]);
+          setIsLoading(false);
+        }
+      }
+    }, debounceDelay), // El valor en ms, ajusta según la experiencia deseada
+    // eslint-disable-next-line prettier/prettier
+    [debounceDelay]
+  );
+
+  const handleSearch = (text) => {
+    if (!text) {
+      setFilteredZones(zones);
+      setSearchText(text);
+      return;
+    }
+    setSearchText(text);
+    searchNeighborhoods(text);
+  };
+
+  if (loading || isLoading) {
     return (
       <View className="w-4/5 justify-center items-center">
         <ActivityIndicator size="large" color="#0000ff" />
@@ -81,6 +131,26 @@ export default function Zone() {
           hacia la que te diriges
         </Text>
       </View>
+      <View className="relative w-full pb-4">
+        <SearchIcon
+          size={20}
+          color="#000000"
+          style={{
+            position: "absolute",
+            left: 10,
+            top: "50%",
+            transform: [{ translateY: -12 }],
+            zIndex: 1, // Asegúrate de que el ícono esté encima
+          }}
+        />
+        <TextInput
+          className="bg-slate-200 rounded-xl pl-10"
+          placeholder="Ingresa tu barrio"
+          value={searchText}
+          onChangeText={handleSearch}
+        />
+      </View>
+
       <ScrollView
         contentContainerStyle={{
           flexDirection: "row",
@@ -88,17 +158,23 @@ export default function Zone() {
           justifyContent: "space-between",
         }}
       >
-        {zones.map((zone) => (
-          <View key={zone.id} style={{ width: "45%", marginBottom: 8 }}>
-            <ZoneCard
-              imgSource={zone.imageSource}
-              text={zone.text}
-              zoneID={zone.id}
-              communityID={communityID}
-              token={token}
-            />
-          </View>
-        ))}
+        {filteredZones.length > 0 ? (
+          filteredZones.map((zone) => (
+            <View key={zone.id} style={{ width: "45%", marginBottom: 8 }}>
+              <ZoneCard
+                imgSource={zone.imageSource}
+                text={zone.text}
+                zoneID={zone.id}
+                communityID={communityID}
+                token={token}
+              />
+            </View>
+          ))
+        ) : (
+          <Text className="text-center text-lg text-gray-500">
+            No hay zonas asignadas para el barrio ingresado
+          </Text>
+        )}
       </ScrollView>
       <TabBar communityID={communityID} token={token} />
     </View>
