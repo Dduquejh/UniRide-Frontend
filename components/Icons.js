@@ -27,3 +27,18 @@ export const CarIcon = (props) => {
 export const ZoneIcon = (props) => {
   return <Ionicons name="location" size={32} color="black" {...props} />;
 };
+
+export const WhatsAppIcon = (props) => {
+  return <Ionicons name="logo-whatsapp" size={32} color="green" {...props} />;
+};
+
+export const CloseIcon = (props) => {
+  return (
+    <Ionicons
+      name="close-circle-outline"
+      size={32}
+      color="red"
+      {...props}
+    ></Ionicons>
+  );
+};

@@ -5,7 +5,6 @@ import Constants from "expo-constants";
 export const CommunitiesContext = createContext();
 
 export const CommunitiesProvider = ({ children }) => {
-  console.log("CommunitiesProvider");
   const [communities, setCommunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

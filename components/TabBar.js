@@ -20,13 +20,7 @@ export default function TabBar({ communityID, token }) {
       </Link>
 
       {/* Pestaña de perfil */}
-      <Link
-        href={{
-          pathname: "/profile",
-          params: ((communityID = { communityID }), (token = { token })),
-        }}
-        asChild
-      >
+      <Link href={`/profile?communityID=${communityID}&token=${token}`} asChild>
         <Pressable className="flex items-center space-y-1 w-1/2">
           <ProfileIcon
             className={`${currentPath === "/profile" ? "text-blue-500" : "text-gray-800"}`}

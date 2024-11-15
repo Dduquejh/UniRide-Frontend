@@ -2,7 +2,7 @@ import { useState } from "react";
 import SearchForm from "./SearchForm";
 import TripsPage from "./TripsPage";
 
-const SearchPage = ({ zoneId }) => {
+const SearchPage = ({ zoneId, token }) => {
   const [isSearching, setIsSearching] = useState(true);
   const [searchResults, setSearchResults] = useState([]);
 
@@ -19,7 +19,11 @@ const SearchPage = ({ zoneId }) => {
       {isSearching ? (
         <SearchForm zoneId={zoneId} onSearchResults={handleSearchResults} />
       ) : (
-        <TripsPage tripData={searchResults} onReturn={handleReturn} />
+        <TripsPage
+          tripData={searchResults}
+          onReturn={handleReturn}
+          token={token}
+        />
       )}
     </>
   );

@@ -1,21 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Constants from "expo-constants";
 import axios from "axios";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { ReturnIcon } from "./Icons";
 import TripCard from "./TripCard";
 
-const TripsPage = ({ tripData, onReturn }) => {
+const TripsPage = ({ tripData, onReturn, token }) => {
   const [trips, setTrips] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const url = Constants.expoConfig.extra.apiUrl;
-      const response = await axios.post(`${url}/trips/search`, tripData);
-      setTrips(response.data);
-      console.log(response.data);
-    };
-    fetchData();
+
+  const fetchData = useCallback(async () => {
+    const url = Constants.expoConfig.extra.apiUrl;
+    const response = await axios.post(`${url}/trips/search`, tripData);
+    setTrips(response.data);
   }, [tripData]);
+
+  useEffect(() => {
+    fetchData();
+  }, [tripData, fetchData]);
+
+  const refreshTrips = () => {
+    fetchData();
+  };
   return (
     <View className="h-full">
       <View className="p-2">
@@ -35,7 +40,14 @@ const TripsPage = ({ tripData, onReturn }) => {
           </View>
         ) : (
           trips.map((trip) => (
-            <TripCard key={trip.id} trip={trip} isEditable={false} />
+            <TripCard
+              key={trip.id}
+              trip={trip}
+              isEditable={false}
+              isReserved={false}
+              token={token}
+              onReserve={refreshTrips}
+            />
           ))
         )}
       </ScrollView>
