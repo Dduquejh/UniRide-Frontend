@@ -92,7 +92,7 @@ const ShareForm = ({ zoneId, token, trip, isEditable, onUpdate }) => {
         seats: carSeats,
         description: description,
         userId: userId,
-        zoneId: trip.zone.id || zoneId,
+        zoneId: trip?.zone.id || zoneId,
         plate: plate,
       };
 
